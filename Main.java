@@ -18,53 +18,42 @@ public class Main {
         boolean quit = true;
 
         while (quit) {
-            System.out.println("0: Close\n" +
-                    "1: Push Number\n" +
-                    "2: Add\n" +
-                    "3: Subtract\n" +
-                    "4: Multiply\n" +
-                    "5: Divide\n" +
-                    "6: Swap\n" +
-                    "7: Debug Mode");
+            String choice = scanner.nextLine();
 
-            int choice = scanner.nextInt();
-
-            switch (choice) {
-                case 0:
-                    quit = false;
-                    break;
-                case 1:
-                    System.out.print("Input number: ");
-                    int input = scanner.nextInt();
-                    stack.push(input);
-                    break;
-                case 2:
-                    add();
-                    break;
-                case 3:
-                    subtract();
-                    break;
-                case 4:
-                    multiply();
-                    break;
-                case 5:
-                    divide();
-                    break;
-                case 6:
-                    swap();
-                    break;
-                case 7:
-                    debug = !debug;
-                    break;
+            try {
+                stack.push(Integer.parseInt(choice));
+            } catch(Exception ex) {
+                switch (choice) {
+                    case "q":
+                        quit = false;
+                        break;
+                    case "+":
+                        add();
+                        break;
+                    case "-":
+                        subtract();
+                        break;
+                    case "*":
+                        multiply();
+                        break;
+                    case "/":
+                        divide();
+                        break;
+                    case "s":
+                        swap();
+                        break;
+                    case "t":
+                        top();
+                        break;
+                    case "d":
+                        debug = !debug;
+                        break;
+                }
             }
 
             if (debug) {
-                if (stack.size() > 1) {
-                    System.out.println(stack.top());
-                }
-
-                System.out.println(stack.toString());
-                System.out.println(stack.size());
+                System.out.println("Full stack " + stack.toString());
+                System.out.println("Stack size " + stack.size());
             }
         }
 
@@ -131,5 +120,11 @@ public class Main {
 
         stack.push(firstNumber);
         stack.push(secondNumber);
+    }
+
+    private static void top() {
+        if (stack.size() > 0) {
+            System.out.println(stack.top());
+        }
     }
 }
