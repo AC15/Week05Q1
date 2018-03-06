@@ -1,20 +1,15 @@
 package aleksander;
 
+import java.util.Collections;
 import java.util.Scanner;
 
 // The LinkedStack implementation is fully functional. The ArrayStack has some minor bugs.
 
 public class Main {
-    private static Stack<Integer> stack;
+    private static Stack<Integer> stack = new LinkedStack<>();;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.println("1: ArrayStack\n" +
-                "2: LinkedStack");
-        int choiceOfStack = scanner.nextInt();
-        stack = (choiceOfStack == 1) ? new ArrayStack<>() : new LinkedStack<>();
-
-        boolean debug = false;
         boolean quit = true;
 
         while (quit) {
@@ -22,7 +17,7 @@ public class Main {
 
             try {
                 stack.push(Integer.parseInt(choice));
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 switch (choice) {
                     case "q":
                         quit = false;
@@ -45,15 +40,13 @@ public class Main {
                     case "t":
                         top();
                         break;
-                    case "d":
-                        debug = !debug;
+                    case "p":
+                        print();
+                        break;
+                    case "r":
+                        rotate();
                         break;
                 }
-            }
-
-            if (debug) {
-                System.out.println("Full stack " + stack.toString());
-                System.out.println("Stack size " + stack.size());
             }
         }
 
@@ -65,8 +58,8 @@ public class Main {
             return;
         }
 
-        int firstNumber = pop();
-        int secondNumber = pop();
+        int firstNumber = pop(stack);
+        int secondNumber = pop(stack);
 
         stack.push(firstNumber + secondNumber);
     }
@@ -76,8 +69,8 @@ public class Main {
             return;
         }
 
-        int firstNumber = pop();
-        int secondNumber = pop();
+        int firstNumber = pop(stack);
+        int secondNumber = pop(stack);
 
         stack.push(firstNumber - secondNumber);
     }
@@ -87,8 +80,8 @@ public class Main {
             return;
         }
 
-        int firstNumber = pop();
-        int secondNumber = pop();
+        int firstNumber = pop(stack);
+        int secondNumber = pop(stack);
 
         stack.push(firstNumber * secondNumber);
     }
@@ -98,13 +91,13 @@ public class Main {
             return;
         }
 
-        int firstNumber = pop();
-        int secondNumber = pop();
+        int firstNumber = pop(stack);
+        int secondNumber = pop(stack);
 
         stack.push(firstNumber / secondNumber);
     }
 
-    private static int pop() {
+    private static int pop(Stack<Integer> stack) {
         int top = stack.top();
         stack.pop();
         return top;
@@ -115,8 +108,8 @@ public class Main {
             return;
         }
 
-        int firstNumber = pop();
-        int secondNumber = pop();
+        int firstNumber = pop(stack);
+        int secondNumber = pop(stack);
 
         stack.push(firstNumber);
         stack.push(secondNumber);
@@ -125,6 +118,33 @@ public class Main {
     private static void top() {
         if (stack.size() > 0) {
             System.out.println(stack.top());
+        }
+    }
+
+    private static void print() {
+        System.out.println(stack.toString());
+    }
+
+    /**
+     * Rotates the stack. Number on top moves to the bottom,
+     * and all the other number move up one place.
+     */
+    private static void rotate() {
+        if (stack.validate()) {
+            return;
+        }
+
+        int topStack = pop(stack);
+        Stack<Integer> stackCopy = new LinkedStack<>();
+
+        while (!stack.isEmpty()) {
+            stackCopy.push(pop(stack));
+        }
+
+        stack.push(topStack);
+
+        while (!stackCopy.isEmpty()) {
+            stack.push(pop(stackCopy));
         }
     }
 }
