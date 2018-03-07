@@ -1,12 +1,10 @@
 package aleksander;
 
-import java.util.Collections;
 import java.util.Scanner;
 
-// The LinkedStack implementation is fully functional. The ArrayStack has some minor bugs.
-
 public class Main {
-    private static Stack<Integer> stack = new LinkedStack<>();;
+    private static StackFactory<Integer> stackFactory = new StackFactory<>();
+    private static Stack<Integer> stack = stackFactory.empty();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -16,7 +14,7 @@ public class Main {
             String choice = scanner.nextLine();
 
             try {
-                stack.push(Integer.parseInt(choice));
+                stack = stackFactory.push(Integer.parseInt(choice), stack);
             } catch (Exception ex) {
                 switch (choice) {
                     case "q":
@@ -48,75 +46,58 @@ public class Main {
                         break;
                 }
             }
+
+            System.out.println("Depth = " + stack.depth());
+            System.out.println("Top = " + stack.top());
         }
 
         scanner.close();
     }
 
     private static void add() {
-        if (stack.validate()) {
-            return;
-        }
+        int firstNumber = pop();
+        int secondNumber = pop();
 
-        int firstNumber = pop(stack);
-        int secondNumber = pop(stack);
-
-        stack.push(firstNumber + secondNumber);
+        stack = stackFactory.push(firstNumber + secondNumber, stack);
     }
 
     private static void subtract() {
-        if (stack.validate()) {
-            return;
-        }
+        int firstNumber = pop();
+        int secondNumber = pop();
 
-        int firstNumber = pop(stack);
-        int secondNumber = pop(stack);
-
-        stack.push(firstNumber - secondNumber);
+        stack = stackFactory.push(firstNumber - secondNumber, stack);
     }
 
     private static void multiply() {
-        if (stack.validate()) {
-            return;
-        }
+        int firstNumber = pop();
+        int secondNumber = pop();
 
-        int firstNumber = pop(stack);
-        int secondNumber = pop(stack);
-
-        stack.push(firstNumber * secondNumber);
+        stack = stackFactory.push(firstNumber * secondNumber, stack);
     }
 
     private static void divide() {
-        if (stack.validate()) {
-            return;
-        }
+        int firstNumber = pop();
+        int secondNumber = pop();
 
-        int firstNumber = pop(stack);
-        int secondNumber = pop(stack);
-
-        stack.push(firstNumber / secondNumber);
+        stack = stackFactory.push(firstNumber / secondNumber, stack);
     }
 
-    private static int pop(Stack<Integer> stack) {
+    private static int pop() {
         int top = stack.top();
-        stack.pop();
+        stack = stack.pop();
         return top;
     }
 
     private static void swap() {
-        if (stack.validate()) {
-            return;
-        }
+        int firstNumber = pop();
+        int secondNumber = pop();
 
-        int firstNumber = pop(stack);
-        int secondNumber = pop(stack);
-
-        stack.push(firstNumber);
-        stack.push(secondNumber);
+        stack = stackFactory.push(firstNumber, stack);
+        stack = stackFactory.push(secondNumber, stack);
     }
 
     private static void top() {
-        if (stack.size() > 0) {
+        if (stack.depth() > 0) {
             System.out.println(stack.top());
         }
     }
@@ -130,21 +111,19 @@ public class Main {
      * and all the other number move up one place.
      */
     private static void rotate() {
-        if (stack.validate()) {
-            return;
-        }
-
-        int topStack = pop(stack);
-        Stack<Integer> stackCopy = new LinkedStack<>();
+        int topStack = pop();
+        Stack<Integer> stackCopy = stackFactory.empty();
 
         while (!stack.isEmpty()) {
-            stackCopy.push(pop(stack));
+            stackCopy = stackFactory.push(pop(), stackCopy);
         }
 
-        stack.push(topStack);
+        stack = stackFactory.push(topStack, stack);
 
         while (!stackCopy.isEmpty()) {
-            stack.push(pop(stackCopy));
+            int top = stackCopy.top();
+            stackCopy = stackCopy.pop();
+            stack = stackFactory.push(top, stack);
         }
     }
 }

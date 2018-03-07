@@ -1,19 +1,23 @@
 package aleksander;
 
-public interface Stack<T> {
-    
-    boolean isEmpty();
-    
-    void pop() throws StackUnderflowException;
-    
-    void push(T item);
-    
-    T top() throws StackUnderflowException;
+public abstract class Stack<A> {
+    /**
+     * Is this stack empty?
+     */
+    abstract boolean isEmpty();
 
-    int size();
+    /**
+     * The top element
+     */
+    abstract A top();
 
-    boolean validate();
-    
-    @Override
-    String toString();
+    /**
+     * The result of removing the top element
+     */
+    abstract Stack<A> pop();
+
+    /**
+     * The number of elements stored
+     */
+    abstract int depth();
 }
